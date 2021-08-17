@@ -132,7 +132,8 @@ myGridObject.getElementWidth();
 ```
 
 ```javascript
-// Rounds up all children of the parent element, uses them to calculate grid measurements, and assigns proper classnames.
+// Rounds up all children of the parent element, uses them to calculate grid measurements, and assigns
+// proper classnames.
 myGridObject.setupChildren();
 ```
 
