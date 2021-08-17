@@ -9,49 +9,26 @@
  */
 export default class SelfAwareGrid {
 
-    // Elements.
-
-    // The parent element / grid container.
     private readonly _rootGridElement: Element;
-    // Array-like collection of each grid child.
     private _children!: HTMLCollection;
 
-    // Measurements.
-
-    // The smallest width of any grid child.
     private _minChildWidth!: number;
-    // The width of the vertical grid gaps.
     private _columnGapWidth!: number;
-    // The height of the horizontal grid gaps.
     private _rowGapWidth!: number;
-    // The amount of columns in the grid.
     private _columnCount!: number;
-    // The amount of rows in the grid.
     private _rowCount!: number;
-    // The amount of column gaps in the grid.
     private _columnGapCount!: number;
-    // The amount of row gaps in the grid.
     private _rowGapCount!: number;
 
-    // Classname strings.
-
-    // Provides a classname for the parent element / grid container.
     private readonly _parentClassNamePrefix = 'self-aware-grid';
-    // Provides a common way to prefix classnames given by this module.
     private readonly _childClassNamePrefix = 'self-aware-grid__child';
-    // Provides a classname for grid children on the top row.
     private readonly topRowClassname = this._childClassNamePrefix + '--is-top-row';
-    // Provides a classname for grid children on the bottom row.
     private readonly bottomRowClassname = this._childClassNamePrefix + '--is-bottom-row';
-    // Provides a classname for grid children on the left column.
     private readonly leftColumnClassname = this._childClassNamePrefix + '--is-left-column';
-    // Provides a classname for grid children on the right column.
     private readonly rightColumnClassname = this._childClassNamePrefix + '--is-right-column';
 
-    // Watches _rootGridElement for resizes.
     private _localResizeObserver!: ResizeObserver;
 
-    // Controls whether to allow the reporting of zero columns, or report a minimum of one.
     private readonly _allowZeroColumns: boolean;
 
     /**
