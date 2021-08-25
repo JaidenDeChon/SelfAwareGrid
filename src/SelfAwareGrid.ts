@@ -240,7 +240,7 @@ export default class SelfAwareGrid {
         if (!this._children[childElementIndex]) {
             return -1;
         }
-        return childElementIndex / this._columnCount;
+        return Math.floor(childElementIndex / this._columnCount);
     }
 
     /**
