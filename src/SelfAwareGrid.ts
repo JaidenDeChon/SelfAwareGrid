@@ -91,19 +91,24 @@ export default class SelfAwareGrid {
     }
 
     /**
-     * Calculates the width in pixels of the grid container's `grid-column-gap` rule.
+     * Calculates the width in pixels of the grid container's `grid-column-gap` or `column-gap` rule.
      * @private
      */
     private setMeasuredColumnGapWidth (): void {
-        this._columnGapWidth = parseFloat(getComputedStyle(this._rootGridElement).gridColumnGap);
+        const gridColumnGap = parseFloat(getComputedStyle(this._rootGridElement).gridColumnGap);
+        const columnGap = parseFloat(getComputedStyle(this._rootGridElement).columnGap);
+        this._columnGapWidth = !isNaN(gridColumnGap) ? gridColumnGap : columnGap;
     }
 
     /**
-     * Calculates the width in pixels of the grid container's `grid-row-gap` rule.
+     * Calculates the width in pixels of the grid container's `grid-row-gap` or `column-gap` rule.
      * @private
      */
     private setMeasuredRowGapWidth (): void {
-        this._rowGapWidth = parseFloat(getComputedStyle(this._rootGridElement).gridRowGap);
+        const gridRowGap = parseFloat(getComputedStyle(this._rootGridElement).gridRowGap);
+        const rowGap = parseFloat(getComputedStyle(this._rootGridElement).rowGap);
+
+        this._rowGapWidth = !isNaN(gridRowGap) ? gridRowGap : rowGap;
     }
 
     /**
