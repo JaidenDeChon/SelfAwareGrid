@@ -85,13 +85,21 @@ describe('SelfAwareGridTests', () => {
 
     describe('Contextual Awareness', () => {
 
-        it.todo('should properly determine `getGridItemAbove`');
+        it('should properly determine `getGridItemAbove`', () => {
+            expect(gridObject.getGridItemAbove(15)).toBe(5);
+        });
 
-        it.todo('should properly determine `getGridItemBelow`');
+        it('should properly determine `getGridItemBelow`', () => {
+            expect(gridObject.getGridItemBelow(2)).toBe(12);
+        });
 
-        it.todo('should properly determine `getGridItemToTheLeft`');
+        it('should properly determine `getGridItemToTheLeft`', () => {
+            expect(gridObject.getGridItemToTheLeft(1)).toBe(0);
+        });
 
-        it.todo('should properly determine `getGridItemToTheRight`');
+        it('should properly determine `getGridItemToTheRight`', () => {
+            expect(gridObject.getGridItemToTheRight(17)).toBe(18);
+        });
     });
 
     describe('General Functionality', () => {
