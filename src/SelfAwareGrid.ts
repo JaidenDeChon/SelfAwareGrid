@@ -39,7 +39,7 @@ export default class SelfAwareGrid {
      * @public
      */
     constructor (rootGridElement: Element, minChildWidth?: number, allowZeroColumns = true) {
-        // Set up the root grid element and begin observing it for changes in content.
+        // Set up observer and other private variables that can be set immediately.
         this._rootGridElement = rootGridElement;
         this._rootGridElement.classList.add(this._parentClassNamePrefix);
         this._rootGridElement.addEventListener('DOMSubtreeModified', () => this.setupChildren());
@@ -47,9 +47,8 @@ export default class SelfAwareGrid {
         // Set up the private variables that can be set immediately.
         this._allowZeroColumns = allowZeroColumns;
 
-        this.setupChildren(minChildWidth);
-
-        this.measureAndSetAllGridValues();
+        // Measure all relevant grid values and assign appropriate classnames.
+        this.setupChildren();
     }
 
     /**
@@ -62,7 +61,7 @@ export default class SelfAwareGrid {
      *     - setCalculatedRowGapCount
      *     - setupChildren
      *     - assignClassNames
-     *     - handleResize
+     *     - computeAllGridData
      */
 
     /**
@@ -162,10 +161,10 @@ export default class SelfAwareGrid {
     }
 
     /**
-     * Takes care of re-measuring grid values and assigning appropriate classnames.
+     * Takes care of (re-)measuring grid values and assigning appropriate classnames.
      * @private
      */
-    private handleResize (): void {
+    private computeAllGridData (): void {
         this.measureAndSetAllGridValues();
         this.assignClassNames();
     }
@@ -368,8 +367,7 @@ export default class SelfAwareGrid {
             ? minChildWidth ?? this.getElementWidth(this._children[0])
             : 0;
 
-        this.measureAndSetAllGridValues();
-        this.assignClassNames();
+        this.computeAllGridData();
     }
 
     /**
@@ -391,7 +389,7 @@ export default class SelfAwareGrid {
      */
     public beginObservingResize (): void {
         this._localResizeObserver = new ResizeObserver(() => {
-            this.handleResize();
+            this.computeAllGridData();
         });
         this._localResizeObserver.observe(this._rootGridElement);
     }
