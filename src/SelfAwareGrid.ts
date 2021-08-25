@@ -9,49 +9,26 @@
  */
 export default class SelfAwareGrid {
 
-    // Elements.
-
-    // The parent element / grid container.
     private readonly _rootGridElement: Element;
-    // Array-like collection of each grid child.
     private _children!: HTMLCollection;
 
-    // Measurements.
-
-    // The smallest width of any grid child.
     private _minChildWidth!: number;
-    // The width of the vertical grid gaps.
     private _columnGapWidth!: number;
-    // The height of the horizontal grid gaps.
     private _rowGapWidth!: number;
-    // The amount of columns in the grid.
     private _columnCount!: number;
-    // The amount of rows in the grid.
     private _rowCount!: number;
-    // The amount of column gaps in the grid.
     private _columnGapCount!: number;
-    // The amount of row gaps in the grid.
     private _rowGapCount!: number;
 
-    // Classname strings.
-
-    // Provides a classname for the parent element / grid container.
     private readonly _parentClassNamePrefix = 'self-aware-grid';
-    // Provides a common way to prefix classnames given by this module.
     private readonly _childClassNamePrefix = 'self-aware-grid__child';
-    // Provides a classname for grid children on the top row.
     private readonly topRowClassname = this._childClassNamePrefix + '--is-top-row';
-    // Provides a classname for grid children on the bottom row.
     private readonly bottomRowClassname = this._childClassNamePrefix + '--is-bottom-row';
-    // Provides a classname for grid children on the left column.
     private readonly leftColumnClassname = this._childClassNamePrefix + '--is-left-column';
-    // Provides a classname for grid children on the right column.
     private readonly rightColumnClassname = this._childClassNamePrefix + '--is-right-column';
 
-    // Watches _rootGridElement for resizes.
     private _localResizeObserver!: ResizeObserver;
 
-    // Controls whether to allow the reporting of zero columns, or report a minimum of one.
     private readonly _allowZeroColumns: boolean;
 
     /**
@@ -62,7 +39,7 @@ export default class SelfAwareGrid {
      * @public
      */
     constructor (rootGridElement: Element, minChildWidth?: number, allowZeroColumns = true) {
-        // Set up the root grid element and begin observing it for changes in content.
+        // Set up observer and other private variables that can be set immediately.
         this._rootGridElement = rootGridElement;
         this._rootGridElement.classList.add(this._parentClassNamePrefix);
         this._rootGridElement.addEventListener('DOMSubtreeModified', () => this.setupChildren());
@@ -70,9 +47,8 @@ export default class SelfAwareGrid {
         // Set up the private variables that can be set immediately.
         this._allowZeroColumns = allowZeroColumns;
 
-        this.setupChildren(minChildWidth);
-
-        this.measureAndSetAllGridValues();
+        // Measure all relevant grid values and assign appropriate classnames.
+        this.setupChildren();
     }
 
     /**
@@ -85,7 +61,7 @@ export default class SelfAwareGrid {
      *     - setCalculatedRowGapCount
      *     - setupChildren
      *     - assignClassNames
-     *     - handleResize
+     *     - computeAllGridData
      */
 
     /**
@@ -114,19 +90,24 @@ export default class SelfAwareGrid {
     }
 
     /**
-     * Calculates the width in pixels of the grid container's `grid-column-gap` rule.
+     * Calculates the width in pixels of the grid container's `grid-column-gap` or `column-gap` rule.
      * @private
      */
     private setMeasuredColumnGapWidth (): void {
-        this._columnGapWidth = parseFloat(getComputedStyle(this._rootGridElement).gridColumnGap);
+        const gridColumnGap = parseFloat(getComputedStyle(this._rootGridElement).gridColumnGap);
+        const columnGap = parseFloat(getComputedStyle(this._rootGridElement).columnGap);
+        this._columnGapWidth = !isNaN(gridColumnGap) ? gridColumnGap : columnGap;
     }
 
     /**
-     * Calculates the width in pixels of the grid container's `grid-row-gap` rule.
+     * Calculates the width in pixels of the grid container's `grid-row-gap` or `column-gap` rule.
      * @private
      */
     private setMeasuredRowGapWidth (): void {
-        this._rowGapWidth = parseFloat(getComputedStyle(this._rootGridElement).gridRowGap);
+        const gridRowGap = parseFloat(getComputedStyle(this._rootGridElement).gridRowGap);
+        const rowGap = parseFloat(getComputedStyle(this._rootGridElement).rowGap);
+
+        this._rowGapWidth = !isNaN(gridRowGap) ? gridRowGap : rowGap;
     }
 
     /**
@@ -180,10 +161,10 @@ export default class SelfAwareGrid {
     }
 
     /**
-     * Takes care of re-measuring grid values and assigning appropriate classnames.
+     * Takes care of (re-)measuring grid values and assigning appropriate classnames.
      * @private
      */
-    private handleResize (): void {
+    private computeAllGridData (): void {
         this.measureAndSetAllGridValues();
         this.assignClassNames();
     }
@@ -258,7 +239,7 @@ export default class SelfAwareGrid {
         if (!this._children[childElementIndex]) {
             return -1;
         }
-        return childElementIndex / this._columnCount;
+        return Math.floor(childElementIndex / this._columnCount);
     }
 
     /**
@@ -386,8 +367,7 @@ export default class SelfAwareGrid {
             ? minChildWidth ?? this.getElementWidth(this._children[0])
             : 0;
 
-        this.measureAndSetAllGridValues();
-        this.assignClassNames();
+        this.computeAllGridData();
     }
 
     /**
@@ -409,7 +389,7 @@ export default class SelfAwareGrid {
      */
     public beginObservingResize (): void {
         this._localResizeObserver = new ResizeObserver(() => {
-            this.handleResize();
+            this.computeAllGridData();
         });
         this._localResizeObserver.observe(this._rootGridElement);
     }

@@ -1,4 +1,4 @@
-export enum GridPositionsEnum {
+enum GridPositionsEnum {
     CENTER = 'CENTER',
     TOP_LEFT = 'TOP_LEFT',
     TOP_RIGHT = 'TOP_RIGHT',
@@ -9,3 +9,5 @@ export enum GridPositionsEnum {
     LEFT_COLUMN = 'LEFT_COLUMN',
     RIGHT_COLUMN = 'RIGHT_COLUMN'
 }
+
+export default GridPositionsEnum;
