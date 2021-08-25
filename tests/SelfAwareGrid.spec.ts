@@ -104,17 +104,67 @@ describe('SelfAwareGridTests', () => {
 
     describe('General Functionality', () => {
 
-        it.todo('should properly determine column count');
+        it('should properly determine column count', () => {
+            expect(gridObject.columnCount()).toBe(10);
+        });
 
-        it.todo('should properly determine row count');
+        it('should properly determine row count', () => {
+            expect(gridObject.rowCount()).toBe(3);
+        });
 
-        it.todo('should properly determine column-gap-width');
+        it('should properly determine column-gap-width', () => {
+            expect(gridObject.columnGapWidth()).toBe(16);
+        });
 
-        it.todo('should properly determine the nth child');
+        it('should properly determine the nth child', () => {
+            const thirdChild = gridElement.children[3] as Element;
+            expect(gridObject.nth(3)).toStrictEqual(thirdChild);
+        });
 
-        it.todo('should properly determine the width of a given child');
+        it('should properly determine the width of a given child', () => {
+            const thirdChild = gridElement.children[3] as Element;
+            const thirdChildWidth = parseFloat(getComputedStyle(thirdChild).width);
+            expect(gridObject.getElementWidth(thirdChild)).toBe(thirdChildWidth);
+        });
 
-        it.todo('should properly assign classnames to children');
+        it('should properly assign classnames to children', () => {
+            // Top left element
+            expect(gridElement.children[0].classList).toContain('self-aware-grid__child--is-top-row');
+            expect(gridElement.children[0].classList).toContain('self-aware-grid__child--is-left-column');
+
+            // Top middle element
+            expect(gridElement.children[5].classList).toContain('self-aware-grid__child--is-top-row');
+
+            // Top right element
+            expect(gridElement.children[9].classList).toContain('self-aware-grid__child--is-top-row');
+            expect(gridElement.children[9].classList).toContain('self-aware-grid__child--is-right-column');
+
+            // Middle left element
+            expect(gridElement.children[10].classList).toContain('self-aware-grid__child--is-left-column');
+
+            // Middle element
+            expect(gridElement.children[15].classList).not.toContain('self-aware-grid__child--is-top-row');
+            expect(gridElement.children[15].classList).not.toContain('self-aware-grid__child--is-left-column');
+            expect(gridElement.children[15].classList).not.toContain('self-aware-grid__child--is-right-column');
+            expect(gridElement.children[15].classList).not.toContain('self-aware-grid__child--is-bottom-row');
+
+            // Middle right element
+            expect(gridElement.children[19].classList).toContain('self-aware-grid__child--is-right-column');
+
+            // Bottom left element (is the last element in this case)
+            expect(gridElement.children[20].classList).toContain('self-aware-grid__child--is-bottom-row');
+            expect(gridElement.children[20].classList).toContain('self-aware-grid__child--is-left-column');
+
+            // Test a few spots to ensure classes are not showing up where they shouldn't
+            expect(gridElement.children[2].classList).not.toContain('self-aware-grid__child--is-bottom-row');
+            expect(gridElement.children[7].classList).not.toContain('self-aware-grid__child--is-bottom-row');
+            expect(gridElement.children[12].classList).not.toContain('self-aware-grid__child--is-bottom-row');
+            expect(gridElement.children[12].classList).not.toContain('self-aware-grid__child--is-top-row');
+            expect(gridElement.children[17].classList).not.toContain('self-aware-grid__child--is-top-row');
+            expect(gridElement.children[17].classList).not.toContain('self-aware-grid__child--is-bottom-row');
+            expect(gridElement.children[20].classList).not.toContain('self-aware-grid__child--is-top-row');
+            expect(gridElement.children[20].classList).not.toContain('self-aware-grid__child--is-right-column');
+        });
 
         it.todo('should recalculate values and classnames upon grid parent resize');
     });
