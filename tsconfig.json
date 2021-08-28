@@ -1,6 +1,22 @@
 {
   "compilerOptions": {
-    "target": "ESNext",
-    "moduleResolution": "Node"
-  }
+    "target": "es5",
+    "module": "CommonJS",
+    "moduleResolution": "Node",
+    "strict": true,
+    "esModuleInterop": true,
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "es6"
+    ],
+    "downlevelIteration": true,
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "outDir": "dist"
+  },
+  "include": [
+    "src"
+  ]
 }

@@ -1,0 +1,1 @@
+{"version":3,"file":"GridPositionsEnum.d.ts","sourceRoot":"","sources":["../src/GridPositionsEnum.ts"],"names":[],"mappings":"AAAA,aAAK,iBAAiB;IAClB,MAAM,WAAW;IACjB,QAAQ,aAAa;IACrB,SAAS,cAAc;IACvB,WAAW,gBAAgB;IAC3B,YAAY,iBAAiB;IAC7B,OAAO,YAAY;IACnB,UAAU,eAAe;IACzB,WAAW,gBAAgB;IAC3B,YAAY,iBAAiB;CAChC;AAED,eAAe,iBAAiB,CAAC"}
