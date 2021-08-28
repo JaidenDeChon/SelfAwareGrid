@@ -9,9 +9,9 @@ SelfAwareGrid was created to add additional functionality to CSS grid, such as:
 
 SelfAwareGrid works by instantiating a new `SelfAwareGrid` object using a grid element as an argument.
 
-* _Todo - Add an import statement example once the package is created_
-
 ```javascript
+import SelfAwareGrid from 'self-aware-grid';
+
 const myGrid = document.getElementById('my-grid-element');
 const myGridObject = new SelfAwareGrid(myGrid);
 ```
