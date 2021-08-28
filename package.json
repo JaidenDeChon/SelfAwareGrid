@@ -1,6 +1,6 @@
 {
   "name": "self-aware-grid",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "SelfAwareGrid provides positional awareness for the children of a grid element. This allows for certain behaviors which are not available natively in the browser, such as traversing a grid via keyboard like a spreadsheet, custom styling based on grid-child element positions, etc.",
   "main": "dist/index.js",
   "types": "dist",
