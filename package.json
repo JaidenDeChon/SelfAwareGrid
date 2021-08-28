@@ -7,7 +7,7 @@
     "url": "https://github.com/JaidenDeChon/SelfAwareGrid.git"
   },
   "publishConfig": {
-    "registry": "https://npm.pkg.github.com"
+    "registry": "https://npm.pkg.github.com/JaidenDeChon"
   },
   "main": "dist/index.js",
   "types": "dist",
@@ -22,7 +22,10 @@
     "grid",
     "self-aware-grid"
   ],
-  "author": "Jaiden DeChon",
+  "author": {
+    "name": "Jaiden DeChon",
+    "email": "jdechon1995@gmail.com"
+  },
   "license": "ISC",
   "devDependencies": {
     "@babel/cli": "^7.14.8",
