@@ -160,5 +160,4 @@ myGridObject.destroy();
 ```
 
 ## Demo
-
-* [Click here to see the demo.](https://jaidendechon.github.io/SelfAwareGrid-Demo/)
+[Click here to see the demo.](https://jaidendechon.github.io/SelfAwareGrid-Demo/)
