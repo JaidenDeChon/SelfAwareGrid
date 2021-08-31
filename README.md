@@ -1,5 +1,7 @@
 # SelfAwareGrid
 
+[Demo here!](https://jaidendechon.github.io/SelfAwareGrid-Demo/)
+
 SelfAwareGrid was created to add additional functionality to CSS grid, such as:
 - **Responsively** styling specific grid columns, rows, and cells -- no more hard-coding a grid width for every
   resolution your app supports. You can now style rows and columns independently and without hard-coding an nth-column.
@@ -159,4 +161,4 @@ myGridObject.destroy();
 
 ## Demo
 
-* _Todo - Create and link to a demo once the package is created_
+* [Click here to see the demo.](https://jaidendechon.github.io/SelfAwareGrid-Demo/)
