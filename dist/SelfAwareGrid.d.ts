@@ -10,11 +10,8 @@ export default class SelfAwareGrid {
     private _children;
     private _minChildWidth;
     private _columnGapWidth;
-    private _rowGapWidth;
     private _columnCount;
     private _rowCount;
-    private _columnGapCount;
-    private _rowGapCount;
     private readonly _parentClassNamePrefix;
     private readonly _childClassNamePrefix;
     private readonly topRowClassname;
@@ -23,6 +20,8 @@ export default class SelfAwareGrid {
     private readonly rightColumnClassname;
     private _localResizeObserver;
     private readonly _allowZeroColumns;
+    private readonly _mutationObserver;
+    private _mutationDebounce;
     /**
      * Constructor.
      * @param   { Element }   rootGridElement    Grid container element.
@@ -32,16 +31,9 @@ export default class SelfAwareGrid {
      */
     constructor(rootGridElement: Element, minChildWidth?: number, allowZeroColumns?: boolean);
     /**
+     * ================================================================================================================
      * PRIVATE MEMBER FUNCTIONS
-     *     - setCalculatedColumnCount
-     *     - setCalculatedRowCount
-     *     - setMeasuredColumnGapWidth
-     *     - setMeasuredRowGapWidth
-     *     - setCalculatedColumnGapCount
-     *     - setCalculatedRowGapCount
-     *     - setupChildren
-     *     - assignClassNames
-     *     - computeAllGridData
+     * ================================================================================================================
      */
     /**
      * Calculates how many columns the grid renders.
@@ -59,21 +51,6 @@ export default class SelfAwareGrid {
      */
     private setMeasuredColumnGapWidth;
     /**
-     * Calculates the width in pixels of the grid container's `grid-row-gap` or `column-gap` rule.
-     * @private
-     */
-    private setMeasuredRowGapWidth;
-    /**
-     * Calculates the combined amount of gutters between columns.
-     * @private
-     */
-    private setCalculatedColumnGapCount;
-    /**
-     * Calculates the combined amount of gutters between rows.
-     * @private
-     */
-    private setCalculatedRowGapCount;
-    /**
      * Assigns `self-aware-grid` classnames to each grid child.
      * @private
      */
@@ -84,13 +61,19 @@ export default class SelfAwareGrid {
      */
     private computeAllGridData;
     /**
+     * Called when a DOM mutation occurs. Determines whether to proceed with reacting to the mutation or ignoring it.
+     * @param {MutationRecord[]} mutations The list of mutations that triggered the onDomMutation function.
+     * @returns
+     */
+    private _onDomMutation;
+    /**
+     * Callback that handles mutations in the grid DOM.
+     */
+    private _mutationCallback;
+    /**
+     * ================================================================================================================
      * PUBLIC MEMBER FUNCTIONS: Positional Booleans
-     *     - isTopRow
-     *     - isBottomRow
-     *     - isLeftColumn
-     *     - isRightColumn
-     *     - isNthColumn
-     *     - isNthRow
+     * ================================================================================================================
      */
     /**
      * Determines whether the given grid-item is in the top row of the grid.
