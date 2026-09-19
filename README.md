@@ -82,7 +82,7 @@ myGridObject.isNthColumn(5);
 myGridObject.isNthRow(5);
 ```
 
-### Contextual Awareness
+### Relative Position
 Provide an index and receive position information of nearby grid children.
 
 ```javascript
