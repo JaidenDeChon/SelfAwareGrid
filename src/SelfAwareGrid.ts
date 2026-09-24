@@ -24,7 +24,7 @@ export default class SelfAwareGrid {
     private readonly leftColumnClassname = this._childClassNamePrefix + '--is-left-column';
     private readonly rightColumnClassname = this._childClassNamePrefix + '--is-right-column';
 
-    private _localResizeObserver!: ResizeObserver;
+    private _localResizeObserver: ResizeObserver | null = null;
 
     private readonly _allowZeroColumns: boolean;
 
@@ -373,6 +373,9 @@ export default class SelfAwareGrid {
      * @public
      */
     public beginObservingResize (): void {
+        // Already observing; avoid creating a second observer that could never be stopped.
+        if (this._localResizeObserver) return;
+
         this._localResizeObserver = new ResizeObserver(() => {
             this.computeAllGridData();
         });
@@ -384,7 +387,8 @@ export default class SelfAwareGrid {
      * @public
      */
     public stopObservingResize (): void {
-        this._localResizeObserver.unobserve(this._rootGridElement);
+        this._localResizeObserver?.disconnect();
+        this._localResizeObserver = null;
     }
 
     /**
@@ -394,6 +398,7 @@ export default class SelfAwareGrid {
     public destroy (): void {
         // Add additional statements or calls as needed
         this.stopObservingResize();
-        this._rootGridElement.removeEventListener('DOMSubtreeModified', () => this.setupChildren());
+        this._mutationObserver.disconnect();
+        clearTimeout(this._mutationDebounce);
     }
 }

@@ -46,6 +46,7 @@ var SelfAwareGrid = /** @class */ (function () {
         this.bottomRowClassname = this._childClassNamePrefix + '--is-bottom-row';
         this.leftColumnClassname = this._childClassNamePrefix + '--is-left-column';
         this.rightColumnClassname = this._childClassNamePrefix + '--is-right-column';
+        this._localResizeObserver = null;
         this._mutationDebounce = 0;
         /**
          * Callback that handles mutations in the grid DOM.
@@ -341,6 +342,9 @@ var SelfAwareGrid = /** @class */ (function () {
      */
     SelfAwareGrid.prototype.beginObservingResize = function () {
         var _this = this;
+        // Already observing; avoid creating a second observer that could never be stopped.
+        if (this._localResizeObserver)
+            return;
         this._localResizeObserver = new ResizeObserver(function () {
             _this.computeAllGridData();
         });
@@ -351,17 +355,19 @@ var SelfAwareGrid = /** @class */ (function () {
      * @public
      */
     SelfAwareGrid.prototype.stopObservingResize = function () {
-        this._localResizeObserver.unobserve(this._rootGridElement);
+        var _a;
+        (_a = this._localResizeObserver) === null || _a === void 0 ? void 0 : _a.disconnect();
+        this._localResizeObserver = null;
     };
     /**
      * Cleans up internal references, event listeners, etc.
      * @public
      */
     SelfAwareGrid.prototype.destroy = function () {
-        var _this = this;
         // Add additional statements or calls as needed
         this.stopObservingResize();
-        this._rootGridElement.removeEventListener('DOMSubtreeModified', function () { return _this.setupChildren(); });
+        this._mutationObserver.disconnect();
+        clearTimeout(this._mutationDebounce);
     };
     return SelfAwareGrid;
 }());

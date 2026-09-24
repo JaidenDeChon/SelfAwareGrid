@@ -145,7 +145,8 @@ myGridObject.measureAndSetAllGridValues();
 ```
 
 ```javascript
-// Initializes the ResizeObserver assigned to the gridContainer element.
+// Initializes the ResizeObserver assigned to the gridContainer element. This is called automatically by the
+// constructor, so it's only needed to resume observing after calling `stopObservingResize()`.
 myGridObject.beginObservingResize();
 ```
 

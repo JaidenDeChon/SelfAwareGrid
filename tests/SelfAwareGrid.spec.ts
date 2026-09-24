@@ -1,5 +1,12 @@
 import SelfAwareGrid from '../src';
 
+// jsdom doesn't implement ResizeObserver, which SelfAwareGrid starts in its constructor.
+global.ResizeObserver = class {
+    observe () {}
+    unobserve () {}
+    disconnect () {}
+};
+
 let gridElement: HTMLElement;
 let gridObject: SelfAwareGrid;
 
