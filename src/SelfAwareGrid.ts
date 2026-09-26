@@ -14,11 +14,8 @@ export default class SelfAwareGrid {
 
     private _minChildWidth!: number;
     private _columnGapWidth!: number;
-    private _rowGapWidth!: number;
     private _columnCount!: number;
     private _rowCount!: number;
-    private _columnGapCount!: number;
-    private _rowGapCount!: number;
 
     private readonly _parentClassNamePrefix = 'self-aware-grid';
     private readonly _childClassNamePrefix = 'self-aware-grid__child';
@@ -27,9 +24,12 @@ export default class SelfAwareGrid {
     private readonly leftColumnClassname = this._childClassNamePrefix + '--is-left-column';
     private readonly rightColumnClassname = this._childClassNamePrefix + '--is-right-column';
 
-    private _localResizeObserver!: ResizeObserver;
+    private _localResizeObserver: ResizeObserver | null = null;
 
     private readonly _allowZeroColumns: boolean;
+
+    private readonly _mutationObserver: MutationObserver;
+    private _mutationDebounce: number = 0;
 
     /**
      * Constructor.
@@ -38,30 +38,29 @@ export default class SelfAwareGrid {
      * @param   { boolean }   allowZeroColumns   Controls whether to allow the reporting of zero columns.
      * @public
      */
-    constructor (rootGridElement: Element, minChildWidth?: number, allowZeroColumns = true) {
+    constructor (rootGridElement: Element, minChildWidth?: number, allowZeroColumns: boolean = true) {
         // Set up observer and other private variables that can be set immediately.
         this._rootGridElement = rootGridElement;
-        this._rootGridElement.classList.add(this._parentClassNamePrefix);
-        this._rootGridElement.addEventListener('DOMSubtreeModified', () => this.setupChildren());
-
-        // Set up the private variables that can be set immediately.
         this._allowZeroColumns = allowZeroColumns;
+
+        // Add the parent marker class.
+        this._rootGridElement.classList.add(this._parentClassNamePrefix);
+
+        // Set up mutation observation.
+        this._mutationObserver = new MutationObserver(this._onDomMutation.bind(this));
+        this._mutationObserver.observe(this._rootGridElement, { childList: true });
 
         // Measure all relevant grid values and assign appropriate classnames.
         this.setupChildren();
+
+        // Begin watching for resize.
+        this.beginObservingResize();
     }
 
     /**
+     * ================================================================================================================
      * PRIVATE MEMBER FUNCTIONS
-     *     - setCalculatedColumnCount
-     *     - setCalculatedRowCount
-     *     - setMeasuredColumnGapWidth
-     *     - setMeasuredRowGapWidth
-     *     - setCalculatedColumnGapCount
-     *     - setCalculatedRowGapCount
-     *     - setupChildren
-     *     - assignClassNames
-     *     - computeAllGridData
+     * ================================================================================================================
      */
 
     /**
@@ -97,33 +96,6 @@ export default class SelfAwareGrid {
         const gridColumnGap = parseFloat(getComputedStyle(this._rootGridElement).gridColumnGap);
         const columnGap = parseFloat(getComputedStyle(this._rootGridElement).columnGap);
         this._columnGapWidth = !isNaN(gridColumnGap) ? gridColumnGap : columnGap;
-    }
-
-    /**
-     * Calculates the width in pixels of the grid container's `grid-row-gap` or `column-gap` rule.
-     * @private
-     */
-    private setMeasuredRowGapWidth (): void {
-        const gridRowGap = parseFloat(getComputedStyle(this._rootGridElement).gridRowGap);
-        const rowGap = parseFloat(getComputedStyle(this._rootGridElement).rowGap);
-
-        this._rowGapWidth = !isNaN(gridRowGap) ? gridRowGap : rowGap;
-    }
-
-    /**
-     * Calculates the combined amount of gutters between columns.
-     * @private
-     */
-    private setCalculatedColumnGapCount (): void {
-        this._columnGapCount = this._columnCount - 1;
-    }
-
-    /**
-     * Calculates the combined amount of gutters between rows.
-     * @private
-     */
-    private setCalculatedRowGapCount (): void {
-        this._rowGapCount = this._rowCount - 1;
     }
 
     /**
@@ -170,13 +142,29 @@ export default class SelfAwareGrid {
     }
 
     /**
+     * Called when a DOM mutation occurs. Determines whether to proceed with reacting to the mutation or ignoring it.
+     * @param {MutationRecord[]} mutations The list of mutations that triggered the onDomMutation function.
+     * @returns 
+     */
+    private _onDomMutation (mutations: MutationRecord[]): void {
+        const hasChildChanges = mutations.some(m => m.type === 'childList');
+        if (!hasChildChanges) return;
+
+        this._mutationCallback();
+    }
+
+    /**
+     * Callback that handles mutations in the grid DOM.
+     */
+    private _mutationCallback = () => {
+        clearTimeout(this._mutationDebounce);
+        this._mutationDebounce = window.setTimeout(() => this.setupChildren(), 0);
+    }
+
+    /**
+     * ================================================================================================================
      * PUBLIC MEMBER FUNCTIONS: Positional Booleans
-     *     - isTopRow
-     *     - isBottomRow
-     *     - isLeftColumn
-     *     - isRightColumn
-     *     - isNthColumn
-     *     - isNthRow
+     * ================================================================================================================
      */
 
     /**
@@ -376,11 +364,8 @@ export default class SelfAwareGrid {
      */
     public measureAndSetAllGridValues (): void {
         this.setMeasuredColumnGapWidth();
-        this.setMeasuredRowGapWidth();
         this.setCalculatedColumnCount();
         this.setCalculatedRowCount();
-        this.setCalculatedColumnGapCount();
-        this.setCalculatedRowGapCount();
     }
 
     /**
@@ -388,6 +373,9 @@ export default class SelfAwareGrid {
      * @public
      */
     public beginObservingResize (): void {
+        // Already observing; avoid creating a second observer that could never be stopped.
+        if (this._localResizeObserver) return;
+
         this._localResizeObserver = new ResizeObserver(() => {
             this.computeAllGridData();
         });
@@ -399,7 +387,8 @@ export default class SelfAwareGrid {
      * @public
      */
     public stopObservingResize (): void {
-        this._localResizeObserver.unobserve(this._rootGridElement);
+        this._localResizeObserver?.disconnect();
+        this._localResizeObserver = null;
     }
 
     /**
@@ -409,6 +398,7 @@ export default class SelfAwareGrid {
     public destroy (): void {
         // Add additional statements or calls as needed
         this.stopObservingResize();
-        this._rootGridElement.removeEventListener('DOMSubtreeModified', () => this.setupChildren());
+        this._mutationObserver.disconnect();
+        clearTimeout(this._mutationDebounce);
     }
 }
